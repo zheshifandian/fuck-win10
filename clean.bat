@@ -45,7 +45,7 @@ echo Processing Installa.wim
 xcopy "%Bin%\hosts" "%MT-Windows-System32%\drivers\etc\" /Y >NUL
 xcopy "%Bin%\Restart.bat" "%MT-Users%\Default\Desktop\" /Y >NUL
 xcopy "%Bin%\Unattend.xml" "%MT-Windows%\Panther\" /Y >NUL
-for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveAppx.txt 2^>NUL ') do ( call :Remove-Appx "%%i" )
+@REM for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveAppx.txt 2^>NUL ') do ( call :Remove-Appx "%%i" )
 for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveCapability.txt 2^>NUL ') do ( call :Remove-Capability "%%i" )
 call :Apply-Unattend %Bin%\Unattend.xml
 call :Copy-Addition
@@ -87,6 +87,7 @@ goto :eof
 xcopy /e /s "%Bin%\Addition" "%MT-Windows%\Addition\" /Y >NUL
 %z7% x "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" -o"%MT-Windows%\Addition\Runtime\DirectX" -aoa >NUL 2>&1
 del /q /s "%Bin%\Addition\Registry" >NUL 2>&1
+del /q /s "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" >NUL 2>&1
 goto :eof
 
 :Export-ESD
