@@ -12,6 +12,7 @@ if exist %SystemRoot%\Addition\NetFX35 (
     echo Install NetFX35
     Dism /Online /Add-Package /PackagePath:%SystemRoot%\Addition\NetFX35 /NoRestart /Quiet
 )
+call :Appx %Runtime%\Appx
 call :Install %Runtime%\DirectX /silent
 call :Install %Runtime%\VC++ /q
 call :Import-Reg "%Registry%"
@@ -73,12 +74,20 @@ shutdown -r -f -t 3
 del /F /Q %0
 exit
 
+:Appx
+for /f "delims=" %%i in (' dir /aa /b "%~1" ^| findstr .appx ') do (
+    echo Installing [%%i]
+    Dism /online /Add-ProvisionedAppxPackage /PackagePath:"%~1\%%i" /SkipLicense /Quiet
+    call powershell add-appxpackage "%~1\%%i"
+)
+goto :eof
+
 :Import-Reg
 for /f "delims=" %%i in (' dir /aa /b "%~1" ^| findstr .reg ') do ( call cmd /c %NSudo% -U:T -P:E reg import "%~1\%%i" )
 goto :eof
 
 :Install
-for /f "delims=" %%i in (' dir /aa /b "%~1" ^| findstr .exe 2^>NUL') do ( 
+for /f "delims=" %%i in (' dir /aa /b "%~1" ^| findstr .exe ') do ( 
     echo Installing [%%i]
     %~1\%%i %~2
 )
