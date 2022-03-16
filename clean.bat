@@ -52,13 +52,12 @@ call :Copy-Addition
 call :Import-Reg "%Registry%"
 call :Remove-Feature
 call :ResetBase
-call :Capture-Image %Build%\installa.wim "Windows 10 IotEnterprise LTSC" %Lists%\ExclusionList.ini
+call :Capture-Image %Build%\install.wim "Windows 10 IotEnterprise LTSC" %Lists%\ExclusionList.ini
 call :UnMount
 
 echo Final Processing
-call :Wimlib-Imagex-Command %Build%\installa.wim "add '%Build%\winre.wim' '\windows\system32\recovery\winre.wim'"
-call :Wimlib-Imagex-Command %Build%\installa.wim "add '%Packs%\NetFX35' '\windows\Addition\NetFX35'"
-call :Export-WIM %Build%\installa.wim 1 %Build%\install.wim
+call :Wimlib-Imagex-Command %Build%\install.wim "add '%Build%\winre.wim' '\windows\system32\recovery\winre.wim'"
+call :Wimlib-Imagex-Command %Build%\install.wim "add '%Packs%\NetFX35' '\windows\Addition\NetFX35'"
 call :Wimlib-Imagex-Info "%Build%\install.wim" "1" "Windows 10 IotEnterprise LTSC 2021" "Windows 10 IotEnterprise LTSC 2021" "IotEnterpriseS" "Windows 10 IotEnterprise LTSC"
 call :Export-ESD %Build%\install.wim %Build%\install.esd
 for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveJunkWim.txt 2^>NUL ') do ( call :Remove-File "%Build%\%%i" )
