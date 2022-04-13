@@ -27,6 +27,7 @@ echo Processing WinRE.wim
 call :Mount-Image %Image%\winre.wim 1
 call :Update-ServicingStackDynamicUpdate
 call :Update-SafeOSDynamicUpdate
+call :Update-CumulativeUpdate
 call :ResetBase
 call :Capture-Image %Build%\winre.wim "Microsoft Windows Recovery Environment (x64)" %Lists%\ExclusionList.ini /Bootable
 call :UnMount
@@ -42,7 +43,7 @@ call :Update-FeatureUpdate
 call :ResetBase
 
 echo Processing Installa.wim
-xcopy "%Bin%\hosts" "%MT-Windows-System32%\drivers\etc\" /Y >NUL
+@REM xcopy "%Bin%\hosts" "%MT-Windows-System32%\drivers\etc\" /Y >NUL
 xcopy "%Bin%\Restart.bat" "%MT-Users%\Default\Desktop\" /Y >NUL
 xcopy "%Bin%\Unattend.xml" "%MT-Windows%\Panther\" /Y >NUL
 @REM for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveAppx.txt 2^>NUL ') do ( call :Remove-Appx "%%i" )
