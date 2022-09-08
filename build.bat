@@ -19,7 +19,7 @@ SET "MT-Windows-WinSxS=%MT-Windows%\WinSxS"
 SET "Packs=%~dp0packages\P"
 SET "Update=%~dp0packages\U"
 SET "wimlib-imagex=%~dp0bin\bin\wimlib-imagex\wimlib-imagex.exe"
-SET "z7=%~dp0bin\bin\7z\7z.exe"
+SET "Unpack=%~dp0bin\bin\7z\7z.exe"
 
 echo Prepare
 if exist %~dp0mount\windows (
@@ -89,7 +89,7 @@ goto :eof
 
 :Copy-Addition
 xcopy /e /s "%~dp0bin\Addition" "%MT-Windows%\Addition\" /Y >NUL
-%z7% x "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" -o"%MT-Windows%\Addition\Runtime\DirectX" -aoa >NUL 2>&1
+%Unpack% x "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" -o"%MT-Windows%\Addition\Runtime\DirectX" -aoa >NUL 2>&1
 del /q /s "%~dp0bin\Addition\Registry" >NUL 2>&1
 del /q /s "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" >NUL 2>&1
 goto :eof
