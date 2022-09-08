@@ -21,12 +21,6 @@ Dism /Online /Set-ReservedStorageState /State:Disabled /Quiet
 
 powercfg /h off
 
-%NSudo% -U:T -P:E REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /va /f
-%NSudo% -U:T -P:E REG DELETE "HKLM\SAM\SAM\Domains\Account\Users\Names\DefaultAccount" /f
-%NSudo% -U:T -P:E REG DELETE "HKLM\SAM\SAM\Domains\Account\Users\Names\WDAGUtilityAccount" /f
-%NSudo% -U:T -P:E REG DELETE "HKLM\SAM\SAM\Domains\Account\Users\000001F7" /f
-%NSudo% -U:T -P:E REG DELETE "HKLM\SAM\SAM\Domains\Account\Users\000001F8" /f
-
 %NSudo% -U:T -P:E REG ADD "HKLM\SOFTWARE\Classes\Applications\photoviewer.dll\shell\open\command" /ve /t REG_EXPAND_SZ /d "%%SystemRoot%%\System32\rundll32.exe \"%%ProgramFiles%%\Windows Photo Viewer\PhotoViewer.dll\", ImageView_Fullscreen %%1" /f
 %NSudo% -U:T -P:E REG ADD "HKLM\SOFTWARE\Classes\Applications\photoviewer.dll\shell\print\command" /ve /t REG_EXPAND_SZ /d "%%SystemRoot%%\System32\rundll32.exe \"%%ProgramFiles%%\Windows Photo Viewer\PhotoViewer.dll\", ImageView_Fullscreen %%1" /f
 %NSudo% -U:T -P:E REG ADD "HKLM\SOFTWARE\Classes\PhotoViewer.FileAssoc.Bitmap" /v "FriendlyTypeName" /t REG_EXPAND_SZ /d "@%%ProgramFiles%%\Windows Photo Viewer\PhotoViewer.dll,-3056" /f
