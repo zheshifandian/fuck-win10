@@ -13,7 +13,8 @@ SET "sed=%~dp0bin\bin\sed\sed.exe"
 if not exist %~dp0image\install.wim ( echo install.wim doesn't exist ) & pause exit
 if not exist %~dp0image\winre.wim ( echo winre.wim doesn't exist ) & pause exit
 
-if exist %~dp0tmp ( rmdir /q /s %~dp0tmp 2>NUL ) else ( mkdir %~dp0tmp 2>NUL )
+if exist %~dp0tmp ( rmdir /q /s %~dp0tmp 2>NUL )
+if not exist %~dp0tmp ( mkdir %~dp0tmp 2>NUL )
 
 call :Prepare-Addition
 call "%~dp0bin\bin\NSudo.exe" -U:T -P:E "%~dp0build.bat"
@@ -22,12 +23,23 @@ exit
 
 :Prepare-Addition
 if not exist %Addition%\Registry ( mkdir %Addition%\Registry 2>NUL )
+if not exist %Addition%\Runtime\.NET_6.0 ( mkdir %Addition%\Runtime\.NET_6.0 2>NUL )
 if not exist %Addition%\Runtime\DirectX ( mkdir %Addition%\Runtime\DirectX 2>NUL )
 if not exist %Addition%\Runtime\VC++ ( mkdir %Addition%\Runtime\VC++ 2>NUL )
 echo Preparing Registry Files
 for /f "delims=" %%i in (' dir /aa /b %Registry% ^| findstr .reg ') do (
 %sed% -e 's/HKLM\\\MT_SOFTWARE/HKEY_LOCAL_MACHINE\\\SOFTWARE/g' -e 's/HKLM\\\MT_NTUSER/HKEY_CURRENT_USER/g' -e 's/HKLM\\\MT_DEFAULT/HKEY_USERS\\\.DEFAULT/g' -e 's/HKLM\\\MT_SYSTEM\\\ControlSet001/HKEY_LOCAL_MACHINE\\\SYSTEM\\\CurrentControlSet/g' -e 's/HKLM\\\MT_SYSTEM/HKEY_LOCAL_MACHINE\\\SYSTEM/g' "%Registry%\%%i" > "tmp\%%i"
 PowerShell -Command "& { get-content "tmp\%%i" -encoding utf8 | set-content "%Addition%\Registry\%%i" -encoding unicode }"
+)
+if exist %Addition%\Runtime\.NET_6.0\*.exe (
+    if exist %Addition%\Runtime\.NET_6.0\*.aria2 (
+        del /q /s %Addition%\Runtime\.NET_6.0\* >NUL
+        echo Downloading .NET 6.0 Desktop Runtime
+        %aria2c% -i %~dp0bin\lists\.NET_6.0.txt -c >NUL
+    )
+) else (
+    echo Downloading .NET 6.0 Desktop Runtime
+    %aria2c% -i %~dp0bin\lists\.NET_6.0.txt -c >NUL
 )
 if exist %Addition%\Runtime\DirectX\*.exe (
     if exist %Addition%\Runtime\DirectX\*.aria2 (

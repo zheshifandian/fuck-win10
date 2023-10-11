@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+[-HKLM\MT_SOFTWARE\WOW6432Node\Microsoft\Edge]
+[-HKLM\MT_SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate]
+[-HKLM\MT_SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge]
+[-HKLM\MT_SYSTEM\CurrentControlSet\Services\edgeupdate]
+[-HKLM\MT_SYSTEM\CurrentControlSet\Services\edgeupdatem]

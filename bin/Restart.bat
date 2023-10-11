@@ -13,6 +13,7 @@ if exist %SystemRoot%\Addition\NetFX35 (
     Dism /Online /Add-Package /PackagePath:%SystemRoot%\Addition\NetFX35 /NoRestart /Quiet
 )
 call :Appx %Runtime%\Appx
+call :Install %Runtime%\.NET_6.0 /s
 call :Install %Runtime%\DirectX /silent
 call :Install %Runtime%\VC++ /q
 call :Import-Reg "%Registry%"
