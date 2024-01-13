@@ -49,7 +49,7 @@ call :ResetBase
 echo Optimizing Install.wim
 xcopy "%~dp0bin\Restart.bat" "%MT-Users%\Default\Desktop\" /Y >NUL
 xcopy "%~dp0bin\Unattend.xml" "%MT-Windows%\Panther\" /Y >NUL
-for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveCapability.txt 2^>NUL ') do ( call :Remove-Capability "%%i" )
+#for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveCapability.txt 2^>NUL ') do ( call :Remove-Capability "%%i" )
 call :Apply-Unattend %~dp0bin\Unattend.xml
 call :Copy-Addition
 call :Import-Reg "%Registry%"
