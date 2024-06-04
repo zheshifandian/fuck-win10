@@ -3,7 +3,7 @@
     Author = "Microsoft Corporation"
     CompanyName = "Microsoft Corporation"
     Copyright = "© Microsoft Corporation. All rights reserved."
-    HelpInfoUri = "https://aka.ms/winsvr-2022-pshelp"
+    HelpInfoUri = "https://aka.ms/winsvr-2025-pshelp"
     ModuleVersion = "3.0"
     PowerShellVersion = "4.0"
     ClrVersion = "4.0"
@@ -22,8 +22,10 @@
         'Disable-WindowsOptionalFeature',
         'Dismount-WindowsImage',
         'Enable-WindowsOptionalFeature',
+        'Expand-OsImage',
         'Expand-WindowsImage',
         'Expand-WindowsCustomDataImage',
+        'Export-OsImage',
         'Export-WindowsCapabilitySource',
         'Export-WindowsDriver',
         'Export-WindowsImage',
@@ -51,6 +53,7 @@
         'Remove-WindowsImage',
         'Remove-WindowsPackage',
         'Repair-WindowsImage',
+        'Save-OsImage',
         'Save-SoftwareInventory',
         'Save-WindowsImage',
         'Set-AppXProvisionedDataFile',
