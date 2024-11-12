@@ -27,29 +27,17 @@ if exist %~dp0mount\windows (
 )
 call :Prepare
 
-echo Processing WinRE.wim
-call :Mount-Image %Image%\winre.wim 1
-call :Update-ServicingStackDynamicUpdate
-call :Update-SafeOSDynamicUpdate
-call :Update-CumulativeUpdate
-call :ResetBase
-call :Capture-Image %Build%\winre.wim "Microsoft Windows Recovery Environment (x64)" %Lists%\ExclusionList.ini /Bootable
-call :UnMount
-call :Wimlib-Imagex-Optimize %Build%\winre.wim lzx
-
 echo Processing Install.wim
 call :Mount-Image %Image%\install.wim 1
 call :Update-ServicingStackDynamicUpdate
-call :Update-SafeOSDynamicUpdate
-call :Update-CumulativeUpdate
-call :Update-FeatureExperiencePack
 call :Update-FeatureUpdate
-call :ResetBase
+call :Update-FeatureExperiencePack
+call :Update-CumulativeUpdate
 
 echo Optimizing Install.wim
 xcopy "%~dp0bin\Restart.bat" "%MT-Users%\Default\Desktop\" /Y >NUL
 xcopy "%~dp0bin\Unattend.xml" "%MT-Windows%\Panther\" /Y >NUL
-#for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveCapability.txt 2^>NUL ') do ( call :Remove-Capability "%%i" )
+@REM for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveCapability.txt 2^>NUL ') do ( call :Remove-Capability "%%i" )
 call :Apply-Unattend %~dp0bin\Unattend.xml
 call :Copy-Addition
 call :Import-Reg "%Registry%"
@@ -58,11 +46,20 @@ call :ResetBase
 call :Capture-Image %Build%\install.wim "Windows 10 IotEnterprise LTSC" %Lists%\ExclusionList.ini
 call :UnMount
 
+echo Processing WinRE.wim
+call :Mount-Image %Image%\winre.wim 1
+call :Update-ServicingStackDynamicUpdate
+call :Update-SafeOSDynamicUpdate
+call :ResetBase
+call :Capture-Image %Build%\winre.wim "Microsoft Windows Recovery Environment (x64)" %Lists%\ExclusionList.ini /Bootable
+call :UnMount
+call :Wimlib-Imagex-Optimize %Build%\winre.wim lzx
+
 echo Final Processing
 call :Wimlib-Imagex-Command %Build%\install.wim "add '%Build%\winre.wim' '\windows\system32\recovery\winre.wim'"
 call :Wimlib-Imagex-Command %Build%\install.wim "add '%Packs%\NetFX35' '\windows\Addition\NetFX35'"
-call :Wimlib-Imagex-Info "%Build%\install.wim" "1" "Windows 10 IotEnterprise LTSC 2021" "Windows 10 IotEnterprise LTSC 2021" "IotEnterpriseS" "Windows 10 IotEnterprise LTSC"
-call :Export-ESD %Build%\install.wim %Build%\install.esd
+call :Wimlib-Imagex-Info "%Build%\install.wim" "1" "Windows 10 IoT Enterprise LTSC 2021" "Windows 10 IoT Enterprise LTSC 2021" "IoTEnterpriseS" "Windows 10 IoT Enterprise LTSC"
+call :Export-ESD "%Build%\install.wim" "1" "%Build%\install.esd" "Recovery"
 for /f "delims=" %%i in (' findstr /i . %Lists%\RemoveJunkWim.txt 2^>NUL ') do ( call :Remove-File "%Build%\%%i" )
 for /f "delims=" %%i in (' dir /aa /b %~dp0bin\Addition\Registry 2^>NUL ') do ( call :Remove-File "%~dp0bin\Addition\Registry\%%i" )
 call :Remove-Folder "%MT%"
@@ -94,8 +91,9 @@ del /q /s "%MT-Windows%\Addition\Runtime\DirectX\DirectX.exe" >NUL 2>&1
 goto :eof
 
 :Export-ESD
-echo export [%~2]
-%wimlib-imagex% export %~1 all %~2 --solid --solid-compress=lzms:100 >NUL 2>&1
+echo export [%~3]
+@REM %wimlib-imagex% export %~1 all %~3 --check --solid --solid-compress=lzms:100 >NUL 2>&1
+%Dism% /Export-Image /SourceImageFile:%~1 /SourceIndex:%~2 /DestinationImageFile:%~3 /Compress:%~4 %Dism-Extra%
 goto :eof
 
 :Export-WIM
@@ -215,6 +213,11 @@ goto :eof
 :UnMount
 echo Unmounting Image
 %Dism% /Unmount-Wim /MountDir:%MT% /Discard %Dism-Extra%
+goto :eof
+
+:UnMount-Commit
+echo Unmounting Image
+%Dism% /Unmount-Wim /MountDir:%MT% /commit %Dism-Extra%
 goto :eof
 
 :UnMount-ImageRegistry
